@@ -5,6 +5,7 @@
 import 'dart:io';
 
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:path/path.dart' as p;
@@ -30,6 +31,7 @@ final Set<String> _kBlockTags = new Set<String>.from(<String>[
 const List<String> _kListTags = const <String>['ul', 'ol'];
 
 bool _isBlockTag(String tag) => _kBlockTags.contains(tag);
+
 bool _isListTag(String tag) => _kListTags.contains(tag);
 
 class _BlockElement {
@@ -135,10 +137,21 @@ class MarkdownBuilder implements md.NodeVisitor {
             recognizer: _linkHandlers.isNotEmpty ? _linkHandlers.last : null,
           );
 
-    _inlines.last.children.add(new RichText(
-      textScaleFactor: styleSheet.textScaleFactor,
-      text: span,
-    ));
+    _inlines.last.children.add(
+      _blocks.last.tag.contains("h")
+          ? Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.only(top: 20, bottom: 10),
+              child: new RichText(
+                textScaleFactor: styleSheet.textScaleFactor,
+                text: span,
+              ),
+            )
+          : new RichText(
+              textScaleFactor: styleSheet.textScaleFactor,
+              text: span,
+            ),
+    );
   }
 
   @override
